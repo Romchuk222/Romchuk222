@@ -32,7 +32,7 @@ back = (200, 255, 255)
 win_width = 600
 win_height = 500 
 window = display.set_mode((win_width, win_height))
-window.fill(back)
+background = transform.scale(image.load('roma10.jpg'), (win_width, win_height))
 
 
 game = True
@@ -41,26 +41,27 @@ clock = time.Clock()
 FPS = 60
 
 mixer.init()
-mixer.music.load('roma4.mp3')
+mixer.music.load('roma5.mp3')
 mixer.music.play()
-lose_sound = mixer.Sound('roma7.ogg')
+lose_sound = mixer.Sound('roma6.mp3')
 
-racket1 = Player('roma.png', 30, 200, 4, 50, 150)
-racket2 = Player('roma1.png', 520, 200, 4, 50, 150)
+racket1 = Player('roma5.png', 30, 200, 4, 50, 150)
+racket2 = Player('roma6.png', 520, 200, 4, 50, 150)
 ball = GameSprite('roma3.png', 200, 200, 4, 50, 50)
 
 font.init()
 font = font.SysFont('Arial', 35)
 lose1 = font.render('ТИ ВИГРАВ!!!', True, (180, 0, 0))
 lose2 = font.render('ТИ ПРОГРАВ!!!', True, (180, 0, 0))
-speed_x = 3 
-speed_y = 3
+speed_x = 5 
+speed_y = 5
 while game:
     for e in event.get():
         if e.type == QUIT:
             game = False
     if finish != True:
-        window.fill(back)
+        keys = key.get_pressed()
+        window.blit(background, (0, 0))
         racket1.update_l()
         racket2.update_r()  
         ball.rect.x += speed_x
@@ -77,14 +78,19 @@ while game:
         if ball.rect.x < 0:
             finish = True
             window.blit(lose1, (200, 200))
-            game_over = True
+            if keys[K_r]:
+                ball.rect.x = 300
+                ball.rect.y = 250
             lose_sound.play()
             mixer.music.stop()
 
         if ball.rect.x > win_width:
             finish = True
             window.blit(lose2, (200, 200))
-            game_over = True   
+            finish = False
+            if keys[K_r]:
+                ball.rect.x = 300
+                ball.rect.y = 250
             lose_sound.play()
             mixer.music.stop() 
 
@@ -96,5 +102,3 @@ while game:
 
     display.update()
     clock.tick(FPS)                 
-
-
